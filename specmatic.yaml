@@ -1,0 +1,6 @@
+sources:
+  - provider: filesystem
+    stub:
+      - employees.yaml
+    test:
+      - employees.yaml
