@@ -10,7 +10,7 @@ paths:
       tags: []
       parameters:
         - in: header
-          name: X-Correlation-Id
+          name: correlation-id
           schema:
             type: string
           required: true
