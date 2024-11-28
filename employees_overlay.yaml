@@ -1,5 +1,6 @@
 overlay: 1.0.0
 actions:
+  # Original POST route modifications
   - target: $.paths['/employees'].post
     update:
       parameters:
@@ -22,3 +23,60 @@ actions:
             format: uuid
           required: true
           description: Unique request identifier for tracing
+
+  # First pattern: Simple header addition for /employees/{employeeId} GET route
+  - target: "$.paths['/employees/{employeeId}'].get"
+    update:
+      parameters:
+        - in: header
+          name: X-Correlation-ID
+          schema:
+            type: string
+          required: true
+          description: Correlation ID for request tracking
+
+  # Second pattern: Adding examples in a new route /employees/active GET
+  - target: "$.paths['/employees/active'].get"
+    update:
+      summary: Get all active employees
+      description: Retrieves a list of all currently active employees
+      parameters:
+        - in: header
+          name: department
+          schema:
+            type: string
+          required: false
+          description: Filter by department
+          examples:
+            ENGINEERING_DEPT:
+              value: "Engineering"
+              summary: Filter for engineering department
+            SALES_DEPT:
+              value: "Sales"
+              summary: Filter for sales department
+      responses:
+        '200':
+          description: List of active employees retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+              examples:
+                ENGINEERING_DEPT:
+                  value:
+                    - id: 101
+                      name: "Jane Smith"
+                      department: "Engineering"
+                      designation: "Senior Developer"
+                    - id: 102
+                      name: "Bob Wilson"
+                      department: "Engineering"
+                      designation: "Tech Lead"
+                SALES_DEPT:
+                  value:
+                    - id: 201
+                      name: "Alice Cooper"
+                      department: "Sales"
+                      designation: "Sales Manager"

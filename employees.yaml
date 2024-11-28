@@ -6,7 +6,7 @@ servers: []
 paths:
   '/employees':
     post:
-      summary: Fetch employee details
+      summary: Create employee
       tags: []
       parameters:
         - in: header
@@ -28,6 +28,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Employee'
+
+  '/employees/{employeeId}':
+    parameters:
+      - in: path
+        name: employeeId
+        required: true
+        description: The unique identifier of the employee
+        schema:
+          type: integer
+    get:
+      summary: Fetch employee details by ID
+      description: Retrieves detailed information about a specific employee
+      responses:
+        '200':
+          description: Employee details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '404':
+          description: Employee not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  '/employees/active':
+    get:
+      summary: Get all active employees
+      description: Retrieves a list of all currently active employees
+      parameters:
+        - in: header
+          name: department
+          schema:
+            type: string
+          required: false
+          description: Filter by department
+      responses:
+        '200':
+          description: List of active employees retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+
 components:
   schemas:
     Employee:
@@ -45,4 +95,3 @@ components:
           type: string
         designation:
           type: string
-
